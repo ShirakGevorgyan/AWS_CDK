@@ -1,28 +1,47 @@
 #!/usr/bin/env python3
 import os
-
 import aws_cdk as cdk
+from cdk_nag import AwsSolutionsChecks
 
 from serverless_factory.serverless_factory_stack import ServerlessFactoryStack
 
-
 app = cdk.App()
-ServerlessFactoryStack(app, "ServerlessFactoryStack",
-    # If you don't specify 'env', this stack will be environment-agnostic.
-    # Account/Region-dependent features and context lookups will not work,
-    # but a single synthesized template can be deployed anywhere.
 
-    # Uncomment the next line to specialize this stack for the AWS Account
-    # and Region that are implied by the current CLI configuration.
+target_env = app.node.try_get_context("env") or "dev"
+valid_envs = ["dev", "prod"]
 
-    #env=cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'), region=os.getenv('CDK_DEFAULT_REGION')),
+if target_env not in valid_envs:
+    raise ValueError(f"❌ Invalid environment: '{target_env}'. Must be one of {valid_envs}")
 
-    # Uncomment the next line if you know exactly what Account and Region you
-    # want to deploy the stack to. */
+account_id = os.getenv('CDK_DEFAULT_ACCOUNT')
+region = os.getenv('CDK_DEFAULT_REGION')
 
-    #env=cdk.Environment(account='123456789012', region='us-east-1'),
+print(f" Initializing App for: {target_env.upper()} | Account: {account_id} | Region: {region}")
 
-    # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
-    )
+aws_env = cdk.Environment(account=account_id, region=region)
+
+stack_name = f"EnterprisePlatform-{target_env.capitalize()}"
+
+stack = ServerlessFactoryStack(
+    app, 
+    stack_name,
+    env=aws_env,
+    env_name=target_env,
+    description=f"Enterprise Platform Infrastructure [{target_env}]"
+)
+
+cdk.Tags.of(app).add("Environment", target_env)
+cdk.Tags.of(app).add("ManagedBy", "CDK-Factory")
+cdk.Tags.of(app).add("Project", "ServerlessFactory")
+cdk.Tags.of(app).add("Owner", "DevOps-Team")
+
+if target_env == "prod":
+    cdk.Aspects.of(app).add(AwsSolutionsChecks(verbose=True))
+    
+"""ERROR IN CDK NAG WITH VERBOSE=False"""
+# else:
+#     cdk.Aspects.of(app).add(AwsSolutionsChecks(verbose=False))
+
+
 
 app.synth()

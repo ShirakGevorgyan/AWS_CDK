@@ -1,0 +1,85 @@
+{
+  "project_name": "UltimateEnterprisePlatform",
+  "version": "TestReady",
+  "resources": [
+    {
+      "type": "virtual_network", 
+      "id": "MainSharedVPC",
+      "config": { "cidr": "10.20.0.0/16" }
+    },
+    {
+      "type": "iam_role",  
+      "id": "AuditRole",
+      "config": { "service": "ec2.amazonaws.com" }
+    },
+    {
+      "type": "auth_provider",
+      "id": "UserPortalAuth",
+      "config": {}
+    },
+    {
+      "type": "secret_storage",
+      "id": "AppSecrets",
+      "config": {}
+    },
+    {
+      "type": "data_stream",
+      "id": "TelemetryStream",
+      "config": { "shards": 2 }
+    },
+    {
+      "type": "scheduled_task",
+      "id": "DailyReports",
+      "config": { "rate_minutes": 1440 }
+    },
+    {
+      "type": "backend_api",
+      "id": "UserServiceAPI",
+      "config": { 
+          "memory": 512, 
+          "use_vpc": true,
+          "database": true 
+      }
+    },
+    {
+      "type": "content_delivery",
+      "id": "PublicWebsiteCDN",
+      "config": {}
+    },
+    {
+      "type": "web_firewall",
+      "id": "ApiProtection",
+      "config": {}
+    },
+    {
+      "type": "sql_database",
+      "id": "CoreDatabase",
+      "config": {}
+    },
+    {
+      "type": "container_repo",
+      "id": "MicroserviceImages",
+      "config": {}
+    },
+    {
+      "type": "k8s_cluster",
+      "id": "MicroserviceOrchestrator",
+      "config": {}
+    },
+    {
+      "type": "workflow_engine",
+      "id": "OrderProcessing",
+      "config": { "use_vpc": true }
+    },
+    {
+      "type": "graphql_api",
+      "id": "MobileAppAPI",
+      "config": { "use_vpc": true }
+    },
+    {
+      "type": "data_analytics",
+      "id": "BusinessIntelligence",
+      "config": {}
+    }
+  ]
+}
