@@ -20,28 +20,27 @@ class ConfigLoader:
     @staticmethod
     def load(filename: str) -> ProjectConfig:
         if not os.path.exists(filename):
-            raise FileNotFoundError(f"❌ Config Error: Configuration file '{filename}' was not found in {os.getcwd()}")
+            raise FileNotFoundError(f" Config Error: Configuration file '{filename}' was not found in {os.getcwd()}")
 
         try:
             with open(filename, "r") as f:
                 data = json.load(f)
         except json.JSONDecodeError as e:
-            raise ValueError(f"❌ Config Error: The file '{filename}' contains invalid JSON.\nError: {e}")
+            raise ValueError(f" Config Error: The file '{filename}' contains invalid JSON.\nError: {e}")
 
         required_keys = ["project_name", "resources"]
         for key in required_keys:
             if key not in data:
-                raise KeyError(f"❌ Config Error: Missing required field '{key}' in {filename}")
+                raise KeyError(f" Config Error: Missing required field '{key}' in {filename}")
         resources = []
         for idx, r in enumerate(data.get("resources", [])):
             
             if "type" not in r or "id" not in r:
-                raise ValueError(f"❌ Config Error: Resource at index {idx} is missing 'type' or 'id'.")
+                raise ValueError(f" Config Error: Resource at index {idx} is missing 'type' or 'id'.")
 
             if not re.match(r'^[a-zA-Z0-9]+$', r["id"]):
-                raise ValueError(f"❌ Config Error: Resource ID '{r['id']}' must contain ONLY letters and numbers (Alphanumeric). No spaces or symbols allowed.")
+                raise ValueError(f" Config Error: Resource ID '{r['id']}' must contain ONLY letters and numbers (Alphanumeric). No spaces or symbols allowed.")
 
-            # Default config, եթե դատարկ է
             r_config = r.get("config", {})
 
             resources.append(ResourceConfig(
@@ -50,7 +49,6 @@ class ConfigLoader:
                 config=r_config
             ))
         
-        # Վերադարձնում ենք մաքուր օբյեկտը
         return ProjectConfig(
             project_name=data["project_name"],
             version=data.get("version", "1.0.0"),
