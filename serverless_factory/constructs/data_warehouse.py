@@ -32,7 +32,7 @@ class DataLakeAnalytics(Construct):
 
         selected_node_type = node_types.get(node_type_id)
         if not selected_node_type:
-            raise ValueError(f"❌ Invalid Redshift Node Type: '{node_type_id}'. Available: {list(node_types.keys())}")
+            raise ValueError(f"Invalid Redshift Node Type: '{node_type_id}'. Available: {list(node_types.keys())}")
         
         subnet_type = ec2.SubnetType.PUBLIC if publicly_accessible else ec2.SubnetType.PRIVATE_WITH_EGRESS
 
