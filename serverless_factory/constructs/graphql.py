@@ -24,7 +24,7 @@ class StandardGraphQLApi(Construct):
         
         if auth_mode == "USER_POOL":
             if not user_pool:
-                raise ValueError("❌ GraphQL Error: Auth mode is 'USER_POOL' but no Cognito Pool provided!")
+                raise ValueError("GraphQL Error: Auth mode is 'USER_POOL' but no Cognito Pool provided!")
                 
             auth_config = appsync.AuthorizationConfig(
                 default_authorization=appsync.AuthorizationMode(
